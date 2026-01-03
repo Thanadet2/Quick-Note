@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>สมัครสมาชิก Quick Notes</title>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <link rel="shortcut icon" href="https://i.pinimg.com/1200x/7c/a1/9b/7ca19b77d7c68092c1c9d0643ffdc7be.jpg" type="image/x-icon">
+</head>
+<body>
+  <div class="bg-glow bg-glow-1"></div>
+  <div class="bg-glow bg-glow-2"></div>
+
+  <main class="card">
+    <header class="card-head">
+      <h1>Create Account</h1>
+      <p class="muted">สร้างบัญชีเพื่อเริ่มใช้งาน</p>
+    </header>
+
+    <form id="registerForm" class="form" novalidate>
+      <label class="field">
+        <input id="regUser" type="text" required />
+        <span class="label">ชื่อผู้ใช้งาน</span>
+      </label>
+
+      <label class="field">
+        <input id="regEmail" type="email" required />
+        <span class="label">อีเมล</span>
+      </label>
+
+      <label class="field">
+        <input id="regPass" type="password" required />
+        <span class="label">รหัสผ่าน</span>
+      </label>
+
+      <label class="field">
+        <input id="regConfirm" type="password" required />
+        <span class="label">ยืนยันรหัสผ่าน</span>
+      </label>
+
+      <button type="submit" class="btn primary">สมัครสมาชิก</button>
+
+      <div class="row-between" style="margin-top:10px">
+        <a class="link" href="index.html">กลับไปหน้าเข้าสู่ระบบ</a>
+      </div>
+    </form>
+
+    <div id="toast" class="toast" aria-live="polite"></div>
+  </main>
+
+  <script>
+    const USERS_KEY = 'md_users_v1';
+
+    // ฟังก์ชันเข้ารหัสรหัสผ่าน (เพื่อความปลอดภัย)
+    async function sha256hex(msg){
+      const enc = new TextEncoder().encode(msg);
+      const buf = await crypto.subtle.digest('SHA-256', enc);
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+    }
+
+    // ฟังก์ชันสร้าง ID
+    function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
+
+    // โหลดและบันทึกข้อมูล
+    function loadUsers(){ try { return JSON.parse(localStorage.getItem(USERS_KEY) || '[]'); } catch(e){ return []; } }
+    function saveUsers(u){ localStorage.setItem(USERS_KEY, JSON.stringify(u)); }
+
+    // แจ้งเตือน Toast
+    function showToast(msg, ms=2200){ 
+        const t = document.getElementById('toast'); 
+        t.textContent = msg; 
+        t.classList.add('visible'); 
+        clearTimeout(t._t); 
+        t._t = setTimeout(()=> t.classList.remove('visible'), ms); 
+    }
+
+    // --- ส่วนทำงานหลัก: กดปุ่มสมัครสมาชิก ---
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      // 1. ดึงค่าจากฟอร์ม
+      const username = document.getElementById('regUser').value.trim();
+      const email = document.getElementById('regEmail').value.trim().toLowerCase();
+      const pass = document.getElementById('regPass').value;
+      const confirm = document.getElementById('regConfirm').value;
+
+      // 2. ตรวจสอบความถูกต้องเบื้องต้น
+      if (!username || !email || !pass || !confirm) { showToast('กรุณากรอกข้อมูลให้ครบ'); return; }
+      if (pass !== confirm) { showToast('รหัสผ่านไม่ตรงกัน'); return; }
+
+      // 3. เช็คว่าซ้ำกับคนอื่นไหม
+      const users = loadUsers();
+      if (users.find(u => u.email === email)) { showToast('อีเมลนี้ถูกใช้งานแล้ว'); return; }
+      if (users.find(u => u.username && u.username.toLowerCase() === username.toLowerCase())) { showToast('ชื่อผู้ใช้มีคนใช้งานแล้ว'); return; }
+
+      // 4. เข้ารหัสรหัสผ่าน
+      const passHash = await sha256hex(pass);
+
+      // 5. สร้างข้อมูลผู้ใช้ใหม่
+      const newUser = {
+          id: uid(),
+          username: username,
+          email: email,
+          passwordHash: passHash, // บันทึกรหัสที่แปลงแล้ว
+          createdAt: new Date().toISOString()
+      };
+
+      // 6. 🔥 บันทึกลงถังเก็บข้อมูล (Save) 🔥
+      users.push(newUser);
+      saveUsers(users);
+
+      // 7. แจ้งเตือนและล็อกอินให้อัตโนมัติ
+      showToast('สมัครสมาชิกเรียบร้อยแล้ว', 1500);
+      
+      // จำว่าล็อกอินแล้ว
+      localStorage.setItem('isLoggedIn', 'true');
+      localStorage.setItem('currentUserName', username);
+
+      // เด้งไปหน้าโน้ต (Quick Notes)
+      setTimeout(() => {
+          window.location.href = '../Quick_Notes/index.html';
+      }, 1200);
+    });
+
+    window.addEventListener('DOMContentLoaded', ()=> document.getElementById('regUser').focus());
+  </script>
+</body>
+</html>

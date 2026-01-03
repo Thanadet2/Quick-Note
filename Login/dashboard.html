@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>หน้าหลัก — Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+   <link rel="shortcut icon" href="https://i.pinimg.com/1200x/7c/a1/9b/7ca19b77d7c68092c1c9d0643ffdc7be.jpg" type="image/x-icon">
+</head>
+<body>
+  <div class="bg-glow bg-glow-1"></div>
+  <div class="bg-glow bg-glow-2"></div>
+
+  <main class="card">
+    <header class="card-head">
+      <h1>หน้าหลัก</h1>
+      <p class="muted">ยินดีต้อนรับเข้าสู่ระบบ</p>
+    </header>
+
+    <section id="welcome" style="margin-top:18px">
+      <p class="muted">กำลังโหลดข้อมูลผู้ใช้...</p>
+    </section>
+
+    <div style="display:flex;gap:10px;margin-top:18px">
+      <button id="logoutBtn" class="btn">ออกจากระบบ</button>
+    </div>
+  </main>
+
+  <script>
+    function getSession(){ try { return JSON.parse(localStorage.getItem('md_session_v1') || 'null'); } catch(e){ return null; } }
+    function clearSession(){ localStorage.removeItem('md_session_v1'); }
+    function loadUsers(){ try { return JSON.parse(localStorage.getItem('md_users_v1') || '[]'); } catch(e){ return []; } }
+
+    // On load: verify session and show user info
+    window.addEventListener('DOMContentLoaded', ()=> {
+      const s = getSession();
+      if (!s || !s.userId) {
+        // not logged in -> redirect to login
+        window.location.href = 'index.html';
+        return;
+      }
+
+      // try to find full user info
+      const users = loadUsers();
+      const user = users.find(u => u.id === s.userId) || { username: s.username, email: s.email };
+      const el = document.getElementById('welcome');
+      el.innerHTML = `<h2>สวัสดี, ${user.username || user.email}</h2>
+                      <p class="muted small">เข้าสู่ระบบเมื่อ: ${new Date(s.at).toLocaleString()}</p>`;
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', ()=> {
+      clearSession();
+      window.location.href = 'index.html';
+    });
+  </script>
+</body>
+</html>

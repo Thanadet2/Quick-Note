@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>เข้าสู่ระบบ — Quick Notes</title>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <link rel="shortcut icon" href="https://i.pinimg.com/1200x/7c/a1/9b/7ca19b77d7c68092c1c9d0643ffdc7be.jpg" type="image/x-icon">
+</head>
+<body>
+  <div class="bg-glow bg-glow-1"></div>
+  <div class="bg-glow bg-glow-2"></div>
+
+  <main class="card">
+    <header class="card-head">
+      <h1>Welcome</h1>
+      <p class="muted">ยินดีต้อนรับ — กรุณาเข้าสู่ระบบ</p>
+    </header>
+
+    <form id="loginForm" class="form" novalidate>
+      <label class="field">
+        <input id="loginIdent" type="text" required />
+        <span class="label">ชื่อผู้ใช้ หรือ อีเมล</span>
+      </label>
+
+      <label class="field">
+        <input id="loginPass" type="password" required />
+        <span class="label">รหัสผ่าน</span>
+      </label>
+
+      <div class="row-between">
+        <a class="link" href="forgot-password.html">ลืมรหัสผ่าน?</a>
+        <a class="link" href="register.html">สมัครสมาชิก</a>
+      </div>
+
+      <button type="submit" class="btn primary">เข้าสู่ระบบ</button>
+    </form>
+
+    <div id="toast" class="toast" aria-live="polite"></div>
+  </main>
+
+  <script>
+    // --- ตั้งค่าระบบ (ต้องตรงกับหน้า Register) ---
+    const USERS_KEY = 'md_users_v1';
+
+    // ฟังก์ชันเข้ารหัส (เหมือนหน้า Register)
+    async function sha256hex(msg){
+      const enc = new TextEncoder().encode(msg);
+      const buf = await crypto.subtle.digest('SHA-256', enc);
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+    }
+
+    // ฟังก์ชันช่วยโหลดข้อมูล
+    function loadUsers(){ 
+      try { 
+        // โหลดข้อมูลดิบ ถ้าไม่มีให้คืนค่าเป็นอาเรย์ว่าง
+        const raw = localStorage.getItem(USERS_KEY);
+        return raw ? JSON.parse(raw) : []; 
+      } catch(e){ 
+        return []; 
+      } 
+    }
+
+    // ฟังก์ชันแจ้งเตือน (Toast)
+    function showToast(msg, ms=2000){ 
+      const t = document.getElementById('toast'); 
+      t.textContent = msg; 
+      t.classList.add('visible'); 
+      clearTimeout(t._t); 
+      t._t = setTimeout(()=> t.classList.remove('visible'), ms); 
+    }
+
+    // --- ส่วนทำงานหลัก: เมื่อกดปุ่ม Login ---
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault(); // กันหน้าเว็บรีเฟรชเอง
+      
+      const ident = document.getElementById('loginIdent').value.trim();
+      const pass = document.getElementById('loginPass').value;
+
+      if (!ident || !pass) { showToast('กรุณากรอกข้อมูลให้ครบ'); return; }
+
+      // 1. โหลดรายชื่อผู้ใช้ทั้งหมดที่มีในระบบ
+      const users = loadUsers();
+      
+      // 2. เข้ารหัสรหัสผ่านที่เพิ่งพิมพ์มา เพื่อเอาไปเทียบ
+      const hashed = await sha256hex(pass);
+
+      // 3. ค้นหาผู้ใช้ (เช็คทั้ง Username และ Email)
+      const user = users.find(u => 
+        (u.username && u.username.toLowerCase() === ident.toLowerCase()) || 
+        (u.email && u.email.toLowerCase() === ident.toLowerCase())
+      );
+
+      // 4. ตรวจสอบความถูกต้อง
+      if (!user) { 
+        showToast('ไม่พบชื่อผู้ใช้หรืออีเมลนี้ในระบบ'); 
+        return; 
+      }
+      
+      if (user.passwordHash !== hashed) { 
+        showToast('รหัสผ่านไม่ถูกต้อง'); 
+        return; 
+      }
+
+      // --- เข้าสู่ระบบสำเร็จ ---
+      showToast('ยินดีต้อนรับ: ' + (user.username || 'User'));
+
+      setTimeout(()=> {
+         // บันทึกสถานะการล็อกอิน
+         localStorage.setItem('isLoggedIn', 'true');
+         localStorage.setItem('currentUserName', user.username || user.email);
+
+         // เด้งไปหน้าหลัก (Quick Notes)
+         window.location.href = '../Quick_Notes/index.html';
+      }, 900);
+    });
+
+    // โฟกัสช่องแรกอัตโนมัติเมื่อเปิดหน้าเว็บ
+    window.addEventListener('DOMContentLoaded', ()=> document.getElementById('loginIdent').focus());
+  </script>
+</body>
+</html>

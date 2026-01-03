@@ -1,0 +1,845 @@
+/* ==================== CSS Variables ==================== */
+:root {
+  /* Colors - Light Theme */
+  --bg-primary: #f8fafc;
+  --bg-secondary: #f1f5f9;
+  --bg-card: #ffffff;
+  --bg-glass: rgba(255, 255, 255, 0.85);
+  
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+  
+  --accent-primary: #6366f1;
+  --accent-secondary: #a78bfa;
+  --accent-gradient: linear-gradient(135deg, #6366f1 0%, #a78bfa 100%);
+  
+  --border-color: #e2e8f0;
+  --shadow-color: rgba(15, 23, 42, 0.08);
+  --shadow-glow: rgba(99, 102, 241, 0.25);
+  
+  --success: #22c55e;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  
+  --radius: 12px;
+  --radius-sm: 8px;
+  --max-width: 1200px;
+  
+  --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Dark Theme */
+body.dark {
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-card: #1e293b;
+  --bg-glass: rgba(30, 41, 59, 0.85);
+  
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #64748b;
+  
+  --border-color: #334155;
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  --shadow-glow: rgba(99, 102, 241, 0.4);
+}
+
+/* ==================== Base Styles ==================== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+  background: var(--bg-primary);
+  background-image: 
+    radial-gradient(ellipse 1000px 500px at 10% 20%, rgba(99, 102, 241, 0.06), transparent);
+  color: var(--text-primary);
+  min-height: 100vh;
+  padding: 24px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+body.no-scroll {
+  overflow: hidden;
+}
+
+/* ==================== Header ==================== */
+/* ส่วนหัวเว็บแบบกว้างเต็มจอ */
+.header {
+  width: 100%;
+  padding: 1.5rem 3rem;
+  margin: 0 0 20px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 10;
+}
+
+.header-left {
+  flex-shrink: 0;
+}
+
+.logo {
+  font-size: 1.75rem;
+  font-weight: 700;
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0;
+}
+
+.tagline {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-top: 2px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* Search Box */
+.search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  left: 12px;
+  width: 18px;
+  height: 18px;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+#searchInput {
+  padding: 10px 12px 10px 40px;
+  width: 220px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  background: var(--bg-glass);
+  backdrop-filter: blur(10px);
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  transition: var(--transition);
+}
+
+#searchInput:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px var(--shadow-glow);
+}
+
+#searchInput::placeholder {
+  color: var(--text-muted);
+}
+
+/* Icon Buttons */
+.icon-btn {
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  background: var(--bg-glass);
+  backdrop-filter: blur(10px);
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+
+.icon-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.icon-btn:hover {
+  background: var(--bg-card);
+  color: var(--text-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--shadow-color);
+}
+
+.icon-btn:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px var(--shadow-glow);
+}
+
+/* ==================== Notes Grid ==================== */
+/* แก้ไขตารางโน้ตให้ชิดขอบซ้าย-ขวา เท่ากับส่วนหัว */
+.notes-grid {
+  width: 100%;                  /* ให้กว้างเต็มจอ */
+  padding: 0 3rem 100px 3rem;   /* เว้นขอบซ้ายขวา 3rem (เท่ากับ Header เป๊ะๆ) */
+  margin: 0;                    /* ลบการจัดกึ่งกลางออก */
+  
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  box-sizing: border-box;
+}
+
+
+/* --- การ์ดโน้ตโฉมใหม่ (Modern Look) --- */
+
+.note-card {
+  background-color: var(--card-bg, #1e293b); /* ใส่สีเผื่อไว้ถ้าตัวแปรไม่ทำงาน */
+  border-radius: 16px;
+  padding: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  position: relative;
+  overflow: hidden;
+
+  /* จัดระเบียบเนื้อหาภายใน */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  height: auto;
+  min-height: 200px;
+}
+
+.note-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+  border-color: var(--primary-color, #6366f1);
+}
+
+/* ป้าย PIN */
+.pin-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background-color: var(--primary-color, #6366f1);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+  z-index: 2;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* กลุ่มปุ่มแอคชั่น (ย้ายไปขวาบน) */
+.card-actions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  width: 100%;
+  justify-content: flex-end;
+  position: relative;
+  z-index: 5; /* ให้อยู่เหนือข้อความ */
+}
+
+/* ปุ่มกดต่างๆ */
+.action-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.action-btn svg {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2px;
+}
+
+.action-btn:hover {
+  background-color: var(--primary-color, #6366f1);
+  color: white;
+  transform: scale(1.1);
+}
+
+.action-btn.pin-active {
+  color: var(--primary-color, #6366f1);
+}
+
+/* ปุ่มลบให้เป็นสีแดงตอนชี้ */
+.action-btn.delete:hover {
+  background-color: #ff4757;
+  color: white;
+}
+
+/* หัวข้อโน้ต */
+.note-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 12px 0;
+  color: var(--text-primary, #f8fafc);
+  line-height: 1.4;
+  width: 100%;
+}
+
+.note-title.untitled {
+  color: var(--text-secondary, #94a3b8);
+  font-style: italic;
+  opacity: 0.7;
+}
+
+/* เนื้อหาโน้ต */
+.note-content {
+  font-size: 1rem;
+  color: var(--text-secondary, #94a3b8);
+  line-height: 1.6;
+  flex-grow: 1;
+  width: 100%;
+  white-space: pre-wrap;
+  margin-bottom: 20px;
+  
+  /* ตัดคำถ้ายาวเกิน 5 บรรทัด */
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* วันที่ด้านล่าง */
+.note-meta {
+  font-size: 0.85rem;
+  color: var(--text-secondary, #94a3b8);
+  opacity: 0.6;
+  width: 100%;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+/* ==================== Empty State ==================== */
+/* จัดให้ "ยังไม่มีโน้ต" ลอยอยู่กลางจอเป๊ะๆ */
+.empty-state {
+  position: fixed;      
+  top: 50%;             
+  left: 50%;            
+  transform: translate(-50%, -50%); 
+  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  
+  width: 100%;
+  pointer-events: none; 
+  z-index: 0;           
+}
+
+/* ปุ่มต้องกดได้ */
+.empty-state button {
+  pointer-events: auto;
+  margin-top: 24px;
+}
+
+.empty-icon {
+  width: 80px;
+  height: 80px;
+  background: var(--accent-gradient);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+  box-shadow: 0 12px 40px var(--shadow-glow);
+}
+
+.empty-icon svg {
+  width: 40px;
+  height: 40px;
+  color: white;
+}
+
+.empty-state h2 {
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.empty-state p {
+  color: var(--text-muted);
+  margin-bottom: 24px;
+}
+
+/* ==================== Buttons ==================== */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: var(--accent-gradient);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: 0 8px 24px var(--shadow-glow);
+}
+
+.btn-primary svg {
+  width: 18px;
+  height: 18px;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px var(--shadow-glow);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-secondary {
+  padding: 10px 18px;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-secondary:hover {
+  background: var(--bg-card);
+  color: var(--text-primary);
+}
+
+.btn-danger {
+  padding: 10px 18px;
+  background: var(--danger);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-danger:hover {
+  opacity: 0.9;
+}
+
+/* ==================== FAB ==================== */
+.fab-container {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 100;
+}
+
+.fab {
+  width: 60px;
+  height: 60px;
+  border: none;
+  border-radius: 50%;
+  background: var(--accent-gradient);
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+  box-shadow: 0 8px 30px var(--shadow-glow);
+}
+
+.fab svg {
+  width: 26px;
+  height: 26px;
+}
+
+.fab:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px var(--shadow-glow);
+}
+
+.fab.fab-small {
+  width: 48px;
+  height: 48px;
+}
+
+.fab.fab-small svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* ==================== Modal ==================== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 200;
+  opacity: 0;
+  visibility: hidden;
+  transition: var(--transition);
+}
+
+.modal-overlay:not([hidden]) {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal {
+  width: 100%;
+  max-width: 600px;
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 24px 80px var(--shadow-color);
+  transform: scale(0.95) translateY(10px);
+  transition: var(--transition);
+}
+
+.modal-overlay:not([hidden]) .modal {
+  transform: scale(1) translateY(0);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.modal-header h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.close-btn {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+
+.close-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.close-btn:hover {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.modal-body {
+  padding: 20px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  font-family: inherit;
+  transition: var(--transition);
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px var(--shadow-glow);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 160px;
+}
+
+.char-count {
+  text-align: right;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 6px;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+/* Quick Composer */
+.quick-composer {
+  position: fixed;
+  right: 24px;
+  bottom: 100px;
+  width: 360px;
+  max-width: calc(100% - 48px);
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 16px 60px var(--shadow-color);
+  padding: 16px;
+  z-index: 210;
+}
+
+.quick-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.quick-header h3 {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.quick-composer input,
+.quick-composer textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  font-family: inherit;
+  margin-bottom: 10px;
+  transition: var(--transition);
+}
+
+.quick-composer input:focus,
+.quick-composer textarea:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+}
+
+.quick-composer textarea {
+  resize: none;
+  min-height: 100px;
+}
+
+.quick-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.quick-footer span {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.quick-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.quick-actions .btn-primary,
+.quick-actions .btn-secondary {
+  padding: 8px 14px;
+  font-size: 0.85rem;
+}
+
+/* Confirm Modal */
+.confirm-modal {
+  width: 100%;
+  max-width: 400px;
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  border: 1px solid var(--border-color);
+  padding: 24px;
+  text-align: center;
+}
+
+.confirm-modal h3 {
+  font-size: 1.25rem;
+  margin-bottom: 12px;
+}
+
+.confirm-modal p {
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+}
+
+.confirm-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+/* ==================== Toast ==================== */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  padding: 12px 20px;
+  background: var(--text-primary);
+  color: var(--bg-primary);
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  font-weight: 500;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  z-index: 300;
+  box-shadow: 0 8px 30px var(--shadow-color);
+}
+
+.toast.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+.toast.success {
+  background: var(--success);
+  color: white;
+}
+
+.toast.error {
+  background: var(--danger);
+  color: white;
+}
+
+/* ==================== Focus Styles ==================== */
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+/* ==================== Responsive ==================== */
+@media (max-width: 768px) {
+  body {
+    padding: 16px;
+  }
+  
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .header-right {
+    width: 100%;
+  }
+  
+  #searchInput {
+    width: 100%;
+    flex: 1;
+  }
+  
+  .notes-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .fab-container {
+    right: 16px;
+    bottom: 16px;
+  }
+  
+  .quick-composer {
+    right: 16px;
+    left: 16px;
+    width: auto;
+    bottom: 90px;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo {
+    font-size: 1.5rem;
+  }
+  
+  .modal {
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+}
+.user-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px;
+}
+
+#displayUsername {
+    color: #00f2fe; /* สีฟ้าสว่างเข้ากับธีม Dark */
+    font-weight: 500;
+}
+
+.logout-btn {
+    background: rgba(255, 75, 43, 0.1);
+    color: #ff4b2b;
+    border: 1px solid #ff4b2b;
+    padding: 5px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.logout-btn:hover {
+    background: #ff4b2b;
+    color: white;
+}

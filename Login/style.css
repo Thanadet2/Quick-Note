@@ -1,0 +1,124 @@
+/* style.css - Modern dark auth UI (copy to project root) */
+:root{
+  --bg:#0f111a;
+  --card: rgba(255,255,255,0.04);
+  --glass: rgba(255,255,255,0.03);
+  --muted: rgba(255,255,255,0.5);
+  --accent1: #00f2fe;
+  --accent2: #764ba2;
+  --radius: 14px;
+  --maxw: 420px;
+  --text: #e9f0fb;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family: 'Kanit', system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+  background: linear-gradient(180deg,#07080b 0%, #0f111a 100%);
+  color:var(--text);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:32px;
+  min-height:100vh;
+  overflow:auto;
+}
+
+/* background glows */
+.bg-glow{
+  position:fixed;
+  width:360px;
+  height:360px;
+  border-radius:50%;
+  filter:blur(80px);
+  z-index:0;
+}
+.bg-glow-1{ right:-80px; top:-80px; background: linear-gradient(180deg, rgba(118,75,162,0.35), rgba(123,140,255,0.18)); }
+.bg-glow-2{ left:-80px; bottom:-80px; background: linear-gradient(180deg, rgba(0,242,254,0.25), rgba(123,140,255,0.08)); }
+
+.card{
+  position:relative;
+  z-index:1;
+  width:100%;
+  max-width:var(--maxw);
+  background:var(--card);
+  border-radius:var(--radius);
+  padding:28px;
+  border:1px solid rgba(255,255,255,0.04);
+  box-shadow: 0 30px 60px rgba(2,6,12,0.7);
+  backdrop-filter: blur(8px);
+}
+
+/* header */
+.card-head h1{ margin:0 0 6px 0; font-size:1.25rem; letter-spacing:-0.2px }
+.card-head .muted{ margin:0; color:var(--muted); font-size:0.9rem; }
+
+/* form */
+.form{ margin-top:18px; display:flex; flex-direction:column; gap:12px; }
+.field{ position:relative; }
+.field input{
+  width:100%;
+  padding:12px 10px 12px 0;
+  background:transparent;
+  border:none;
+  outline:none;
+  color:var(--text);
+  font-size:1rem;
+  border-bottom:1px solid rgba(255,255,255,0.06);
+}
+.field .label{
+  position:absolute; left:0; top:12px; pointer-events:none; color:var(--muted); transform-origin:left;
+  transition: .16s ease; font-size:0.95rem;
+}
+.field input:focus + .label,
+.field input:not(:placeholder-shown) + .label{
+  transform: translateY(-22px);
+  font-size:0.78rem;
+  color: var(--accent1);
+}
+
+/* small utilities */
+.row-between{ display:flex; justify-content:space-between; align-items:center; margin-top:6px; }
+.link{ color:var(--muted); font-size:0.88rem; text-decoration:none }
+.link:hover{ color:var(--accent1) }
+
+/* button */
+.btn{
+  border:0; cursor:pointer; padding:12px 14px; border-radius:10px; font-weight:600; font-size:1rem;
+  background: transparent; color:var(--text);
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+.btn:active{ transform: translateY(1px) scale(.997) }
+.primary{
+  background: linear-gradient(90deg,var(--accent1),var(--accent2));
+  color:#fff; box-shadow: 0 10px 30px rgba(99,102,241,0.12);
+}
+
+/* toast */
+.toast{
+  position:fixed; left:50%; transform:translateX(-50%); bottom:34px;
+  background: rgba(0,0,0,0.6); color:#fff; padding:10px 14px; border-radius:8px; opacity:0;
+  transition: opacity .18s ease, transform .18s ease; z-index:200;
+}
+.toast.visible{ opacity:1; transform: translateX(-50%) translateY(-6px); }
+
+/* result box for forgot page */
+.result{
+  margin-top:14px;
+  border-radius:10px;
+  padding:12px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border:1px solid rgba(255,255,255,0.03);
+  color:var(--muted);
+}
+.result.hidden{ display:none; }
+.small{ font-size:0.85rem; }
+
+/* responsive */
+@media (max-width:480px){
+  :root{ --maxw: 100%; }
+  .bg-glow{ display:none; }
+  body{ padding:18px; }
+}
